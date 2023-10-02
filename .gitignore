@@ -2,4 +2,4 @@
 .env.local
 node_modules
 dist
-build
+src/build
