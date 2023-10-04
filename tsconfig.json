@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": "src",
+    "outDir": "build",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -11,11 +11,10 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "./src/*.ts",
-    "./src/app/*.ts",
-    "./src/routes/*.ts"
+    "src",
   ],
   "exclude": [
-    "./node_modules"
+    "src/build.ts",
+    "node_modules"
   ]
 }
