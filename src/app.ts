@@ -1,9 +1,10 @@
-import express, { Express, NextFunction, Request, Response } from 'express'
+import express, { Express, NextFunction, Request, response, Response } from 'express'
 import createError from 'http-errors'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 import indexRouter from './routes'
 import userRouter from './routes/users'
+import productRouter from './routes/product'
 import path from 'path'
 
 
@@ -21,45 +22,49 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/users', userRouter)
+app.use('/product', productRouter)
 
 const product = {
-	list: function (req: Request, res: Response): void {
-		res.send('Product list')
+	list: function (request: Request, response: Response): void {
+		app.use('/product', productRouter)
 	},
 
-	get: function (req: Request, res: Response): void {
-		res.send('Product ' + req.params.uid)
+	get: function (request: Request, response: Response): void {
+		response.send('Product ' + request.params.uid)
 	},
 
-	add: function (req: Request, res: Response): void {
-		res.send('Add product')
+	add: function (request: Request, response: Response): void {
+		response.send('Add product')
 	},
 
-	edit: function (req: Request, res: Response): void {
-		res.send('Edit product ' + req.params.uid)
+	edit: function (request: Request, response: Response): void {
+		response.send('Edit product ' + request.params.uid)
 	},
 
-	delete: function (req: Request, res: Response): void {
-		res.send('Delete product ' + req.params.uid)
+	delete: function (request: Request, response: Response): void {
+		response.send('Delete product ' + request.params.uid)
 	}
 }
 
-app.get('/product', product.list)
+/*app.get('/product', product.list)
+app.get('/list', (response: Response) => {
+	response.send('List of products')
+})*/
 app.get('/product/add', product.add)
 app.get('/product/:uid', product.get)
 app.get('/product/:uid/edit', product.edit)
 app.post('/product/:uid/delete', product.delete)
 
-app.use(function (req: Request, res: Response, next: NextFunction): void {
+app.use(function (request: Request, response: Response, next: NextFunction): void {
 	next(createError(404))
 })
 
-app.use(function (err: any, req: Request, res: Response, next: NextFunction): void {
-	res.locals.message = err.message
-	res.locals.error = req.app.get('env') === 'development' ? err : {}
+app.use(function (error: any, request: Request, response: Response, next: NextFunction): void {
+	response.locals.message = error.message
+	response.locals.error = request.app.get('env') === 'development' ? error : {}
 
-	res.status((err.status || 500))
-	res.render('error')
+	response.status(error.status || 500)
+	response.render('error')
 })
 
 app.listen(port, (): void => {
